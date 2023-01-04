@@ -7,6 +7,9 @@ import "github.com/gogo/protobuf@v1.3.2/gogoproto/gogo.proto";
 import "github.com/mwitkow/go-proto-validators@v0.3.2/validator.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
+//import "google/protobuf/gogo.proto";
+//import "google/protobuf/validator.proto";
+//import "google/protobuf/annotations.proto";
 
 package admin;
 
