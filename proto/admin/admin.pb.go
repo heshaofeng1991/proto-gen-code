@@ -412,8 +412,8 @@ func (m *UpdateBrandReq) GetDeleteFlag() int32 {
 }
 
 type GetBrandByIDReq struct {
-	// @gotags: json:"brand_id,required" form:"brand_id" validate:"required"
-	BrandId int64 `protobuf:"varint,1,opt,name=brand_id,json=brandId,proto3" json:"brand_id,required" form:"brand_id" validate:"required"`
+	// @gotags: json:"brand_id,required" form:"brand_id" validate:"required" binding:"required,gte=1"
+	BrandId int64 `protobuf:"varint,1,opt,name=brand_id,json=brandId,proto3" json:"brand_id,required" form:"brand_id" validate:"required" binding:"required,gte=1"`
 }
 
 func (m *GetBrandByIDReq) Reset()         { *m = GetBrandByIDReq{} }

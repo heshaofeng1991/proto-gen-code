@@ -9,7 +9,8 @@ init:
 	go install github.com/mwitkow/go-proto-validators/protoc-gen-govalidators@latest
 	go install github.com/heshaofeng1991/protoc-gen-go-http@latest
 	go install github.com/gogo/protobuf/protoc-gen-gogofaster@latest
-	go install github.com/favadi/protoc-go-inject-tag@v1.3.0
+	go install github.com/favadi/protoc-go-inject-tag@latest
+	go install github.com/gogo/protobuf/gogoproto@latest
 
 .PHONY: proto
 proto:
