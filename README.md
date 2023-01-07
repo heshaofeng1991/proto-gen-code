@@ -42,7 +42,8 @@ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 go install github.com/mwitkow/go-proto-validators/protoc-gen-govalidators@latest
 go install github.com/heshaofeng1991/protoc-gen-go-http@latest (个人封装的http方式，感兴趣可以研究学习，相互进步)
 go install github.com/gogo/protobuf/protoc-gen-gogofaster@latest
-go install github.com/favadi/protoc-go-inject-tag@v1.3.0
+go install github.com/favadi/protoc-go-inject-tag@latest
+go install github.com/gogo/protobuf/gogoproto@latest
 ```
 - 项目代码生成命令
 ```shell
@@ -52,16 +53,22 @@ protoc -I=. -I=${GOPATH}/pkg/mod \
     --govalidators_out=. --govalidators_opt=paths=source_relative \
     --go-http_out=. --go-http_opt=paths=source_relative \
     proto/admin/web.proto
+    
+protoc -I=. -I=${GOPATH}/pkg/mod \
+    --go_out=plugins=grpc:. \
+    --ginhttp_out=:. \
+    proto/web/web.proto
 ```
 - 生成的结构体注入自定义tag
 ```shell
 protoc-go-inject-tag -input=${GOPATH}/src/tools/proto-gen-code/proto/admin/admin.pb.go
+protoc-go-inject-tag -input=${GOPATH}/src/tools/proto-gen-code/proto/web/web.pb.go
 ```
 
-- tag使用说明
+- tag使用说明(gin validator)
 ```text
 message GetBrandByIDReq {
-  // @gotags: json:"brand_id,required" form:"brand_id" validate:"required"
+  // @gotags: json:"brand_id,required" form:"brand_id" validate:"required" binding:"required,gte=1"
   int64 brand_id = 1 [(google.protobuf.field) = {int_gt: 0}];
 }
 ```
