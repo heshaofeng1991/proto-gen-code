@@ -42,11 +42,10 @@ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 go install github.com/mwitkow/go-proto-validators/protoc-gen-govalidators@latest
 go install github.com/heshaofeng1991/protoc-gen-go-http@latest (个人封装的http方式，感兴趣可以研究学习，相互进步)
 go install github.com/gogo/protobuf/protoc-gen-gogofaster@latest
+go install github.com/favadi/protoc-go-inject-tag@v1.3.0
 ```
 - 项目代码生成命令
 ```shell
-make proto 
-or 
 protoc -I=. -I=${GOPATH}/pkg/mod \
     --gogofaster_out=. --gogofaster_opt=paths=source_relative \
     --go-grpc_out=. --go-grpc_opt=paths=source_relative \
@@ -54,6 +53,24 @@ protoc -I=. -I=${GOPATH}/pkg/mod \
     --go-http_out=. --go-http_opt=paths=source_relative \
     proto/admin/admin.proto
 ```
+- 生成的结构体注入自定义tag
+```shell
+protoc-go-inject-tag -input=${GOPATH}/src/tools/proto-gen-code/proto/admin/admin.pb.go
+```
+
+- tag使用说明
+```text
+message GetBrandByIDReq {
+  // @gotags: json:"brand_id,required" form:"brand_id" validate:"required"
+  int64 brand_id = 1 [(google.protobuf.field) = {int_gt: 0}];
+}
+```
+
+- 如果不需要json omitempty可以执行
+```shell
+ls *.pb.go | xargs -n1 -IX bash -c 'sed s/,omitempty// X > X.tmp && mv X{.tmp,}'
+```
+
 - notes
   - Windows make设置说明
   ```toml
