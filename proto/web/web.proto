@@ -1,0 +1,148 @@
+ syntax = "proto3";
+
+// 指定golang包名
+option go_package = "./;web";
+
+import "google/protobuf/annotations.proto";
+import "google/protobuf/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/validator.proto";
+
+package admin;
+
+service Admin {
+  // 创建发行方商品.
+  rpc CreateBrand(CreateBrandReq)returns (CreateBrandRsp) {
+    option (google.protobuf.http) = {
+      post: "/v1/admin/brand_manager/create",
+      body: "*",
+    };
+  }
+
+  // 编辑发行方商品.
+  rpc UpdateBrand(UpdateBrandReq) returns (CommonRsp) {
+    option (google.protobuf.http) = {
+      post: "/v1/admin/brand_manager/edit"
+      body: "*"
+    };
+  }
+
+  // 基于发行方商品ID查询发行方商品详情.
+  rpc GetBrandByID(GetBrandByIDReq) returns (GetBrandByIDRsp) {
+    option (google.protobuf.http) = {
+      get: "/v1/admin/brand_manager/get/{brand_id}"
+    };
+  }
+
+  // 批量查询发行方商品数据.
+  rpc MultiGetBrand(MultiGetBrandReq) returns (MultiGetBrandRsp) {
+    option (google.protobuf.http) = {
+      get: "/v1/admin/brand_manager/bulk_get"
+    };
+  }
+
+  // 删除发行方商品.
+  rpc RemoveBrand(RemoveBrandReq) returns (CommonRsp) {
+    option (google.protobuf.http) = {
+      post: "/v1/admin/brand_manager/remove"
+      body: "*"
+    };
+  }
+}
+
+// 通用返回结构。
+message CommonRsp {
+  int64 code = 1 [(google.protobuf.jsontag) = "code"];
+  string desc = 2 [(google.protobuf.jsontag) = "desc"];
+  Empty data = 3 [(google.protobuf.jsontag) = "data"];
+}
+
+// 空结构体。
+message Empty{}
+
+// 创建商品品牌请求结构。
+message CreateBrandReq {
+  string name = 1 [(google.protobuf.field) = {string_not_empty: true,length_lt:255}];
+  string cover_url = 2 [(google.protobuf.field) = {string_not_empty: true,length_lt:255}];
+  int32 sort_order = 3 [(google.protobuf.field) = {int_gt: 0}];
+  int64 created_by = 4 [(google.protobuf.field) = {int_gt: 0}];
+  int64 updated_by = 5 [(google.protobuf.field) = {int_gt: 0}];
+  string remark = 6 [(google.protobuf.field) = {string_not_empty: true,length_lt:255}];
+}
+
+// 创建商品品牌返回结构。
+message CreateBrandRsp {
+  int64 code = 1 [(google.protobuf.jsontag) = "code"];
+  string desc = 2 [(google.protobuf.jsontag) = "desc"];
+  CreateBrandData data = 3 [(google.protobuf.jsontag) = "data"];
+}
+
+// 创建商品品牌data结构。
+message CreateBrandData {
+  int64 id = 1;
+}
+
+// 编辑商品品牌请求结构。
+message UpdateBrandReq {
+  string name = 1 [(google.protobuf.field) = {string_not_empty: true,length_lt:255}];
+  string cover_url = 2 [(google.protobuf.field) = {string_not_empty: true,length_lt:255}];
+  int32 sort_order = 3 [(google.protobuf.field) = {int_gt: 0}];
+  int64 created_by = 4 [(google.protobuf.field) = {int_gt: 0}];
+  int64 updated_by = 5 [(google.protobuf.field) = {int_gt: 0}];
+  string remark = 6 [(google.protobuf.field) = {string_not_empty: true,length_lt:255}];
+  int32 delete_flag = 7;
+}
+
+message GetBrandByIDReq {
+  // @gotags: json:"brand_id,required" form:"brand_id" validate:"required" binding:"required,gte=1"
+  int64 brand_id = 1 [(google.protobuf.field) = {int_gt: 0}];
+}
+
+message GetBrandByIDRsp {
+  int64 id = 1;
+  string name = 2;
+  string cover_url = 3;
+  int32 sort_order = 4;
+  int64 created_by = 5;
+  int64 updated_by = 6;
+  string remark = 7;
+  int32 delete_flag = 8;
+  google.protobuf.Timestamp created_time = 9 [(google.protobuf.jsontag) = 'created_time', (google.protobuf.stdtime) = true];
+  google.protobuf.Timestamp updated_time = 10 [(google.protobuf.jsontag) = 'updated_time', (google.protobuf.stdtime) = true];
+}
+
+message MultiGetBrandReq {
+  int32 page = 1 [(google.protobuf.field) = {int_gt: 0}];
+  int32 page_size = 2 [(google.protobuf.field) = {int_gt: 0}];
+  string name = 3 [(google.protobuf.field) = {string_not_empty: true,length_lt:255}];
+  google.protobuf.Timestamp start_time = 4 [(google.protobuf.jsontag) = 'start_time', (google.protobuf.stdtime) = true];
+  google.protobuf.Timestamp end_time = 5 [(google.protobuf.jsontag) = 'end_time', (google.protobuf.stdtime) = true];
+}
+
+message MultiGetBrandRsp {
+  int64 code = 1 [(google.protobuf.jsontag) = "code"];
+  string desc = 2 [(google.protobuf.jsontag) = "desc"];
+  MultiGetBrandData data = 3 [(google.protobuf.jsontag) = "data"];
+}
+
+message MultiGetBrandData{
+  repeated  MultiGetBrandContent list = 1 [(google.protobuf.jsontag) = "list"];
+  int64 total = 2 [(google.protobuf.jsontag) = "total"];
+}
+
+message MultiGetBrandContent {
+  int64 id = 1;
+  string name = 2;
+  string cover_url = 3;
+  int32 sort_order = 4;
+  int64 created_by = 5;
+  int64 updated_by = 6;
+  string remark = 7;
+  int32 delete_flag = 8;
+  google.protobuf.Timestamp created_time = 9 [(google.protobuf.jsontag) = 'created_time', (google.protobuf.stdtime) = true];
+  google.protobuf.Timestamp updated_time = 10 [(google.protobuf.jsontag) = 'updated_time', (google.protobuf.stdtime) = true];
+}
+
+message RemoveBrandReq {
+  int64 brand_id = 1 [(google.protobuf.field) = {int_gt: 0}];
+}

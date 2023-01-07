@@ -51,7 +51,7 @@ protoc -I=. -I=${GOPATH}/pkg/mod \
     --go-grpc_out=. --go-grpc_opt=paths=source_relative \
     --govalidators_out=. --govalidators_opt=paths=source_relative \
     --go-http_out=. --go-http_opt=paths=source_relative \
-    proto/admin/admin.proto
+    proto/admin/web.proto
 ```
 - 生成的结构体注入自定义tag
 ```shell
